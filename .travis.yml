@@ -4,4 +4,4 @@ addons:
     packages:
       - cmake
 
-install: ./scripts/bootstrap
+install: ./scripts/travis/build

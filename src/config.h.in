@@ -1,0 +1,1 @@
+#cmakedefine PCR_VERSION "@PCR_VERSION@"

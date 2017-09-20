@@ -1,30 +1,27 @@
 #include <argp.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "htslib/faidx.h"
 
-const char *argp_program_version = PCR_VERSION;
-const char *argp_program_bug_address = "<nope@nope.bla>";
-
-static char doc[] = "this prog does stuff";
-
-static char args_doc[] = "";
-
 static struct argp_option options[] = {
-    {"verbose", 'v', 0, 0, "be verbose"},
-    {"output", 'o', "OUTPUT", 0, "file to write to (default stdout)"},
-    {"reference", 'r', "REFERENCE", 0, "reference genome file in fasta "
-                                       "format, with accompanying *.fai index"},
+    {"verbose",      'v', 0,              0, "be verbose", 0},
+    {"output",       'o', "OUTPUT",       0, "file to write to (default stdout)", 0},
+    {"reference",    'r', "REFERENCE",    0,
+     "reference genome file in fasta format, with accompanying *.fai index", 0},
+    {"query-string", 'q', "QUERY_STRING", 0,
+     "contig:start-stop string to query across. (Default is the whole fasta file)", 0},
     {0},
 };
 
 struct cli_arguments
 {
     int verbose;
-    char *output_file;
+    char *output;
     char *reference;
+    char *query_string;
 };
 
 static error_t
@@ -39,27 +36,54 @@ parse_args(int key, char *arg, struct argp_state *state)
 	args->verbose = 1;
 	break;
     case 'o':
-	args->output_file = arg;
+	args->output = arg;
 	break;
     case 'r':
 	args->reference = arg;
+	break;
+    case 'q':
+	args->query_string = arg;
 	break;
     case ARGP_KEY_ARG:
 	sprintf(unknown_pos_arg_msg, "invalid option -- '%s'", arg);
 	argp_error(state, unknown_pos_arg_msg);
 	break;
-    case ARGP_KEY_END:
-	if(state->arg_num < 0)
-	    argp_usage(state);
-	break;
-
     default:
 	return ARGP_ERR_UNKNOWN;
     }
     return 0;
 }
 
-static struct argp argp = {options, parse_args, args_doc, doc};
+const char *argp_program_version = PCR_VERSION;
+const char *argp_program_bug_address = PCR_BUG_ADDRESS;
+char doc[] = PCR_DOC_STRING;
+
+static struct argp argp = {
+    options,
+    parse_args,
+    "",     // args_doc
+    doc,
+    0,      // children
+    0,      // help_filter
+    0       // argp_domain
+};
+
+int
+file_readable(char *fname)
+{
+    if(access(fname, R_OK) != -1)
+	return 1;
+    else
+	return 0;
+}
+
+/* int */
+/* validate_query_string(char *query_string) */
+/* { */
+/*     if(strlen(query_string) == 0) */
+/* 	puts("query string is empty") */
+/* 	exit(1) */
+/* } */
 
 int
 main(int argc, char **argv)
@@ -67,39 +91,39 @@ main(int argc, char **argv)
     struct cli_arguments args;
 
     args.verbose = 0;
-    args.output_file = "-";
+    args.output = "-";
+    args.query_string = "";
 
     argp_parse(&argp, argc, argv, 0, 0, &args);
 
     if(args.verbose)
     {
 	printf("Parsed Arguments:\n"
-	       "output-file = %s\n"
+	       "output = %s\n"
 	       "reference = %s\n"
 	       "verbose = %s\n",
-	       args.output_file,
+	       args.output,
 	       args.reference,
 	       args.verbose ? "yes" : "no");
     }
 
-    if(strlen(args.reference) == 0)
+    if(!file_readable(args.reference))
     {
-	puts("No reference specified");
+	printf("Reference is not readable: %s\n", args.reference);
 	exit(1);
     }
 
     faidx_t *fai = fai_load(args.reference);
-    if (!fai)
+    if(!fai)
     {
-	printf("Could not load fai index of %s\n"
-	       "Create with `samtools fadix`", args.reference);
+	printf("Could not load fai index of %s\n", args.reference);
 	exit(1);
     }
 
     int seq_len;
-    char *seq = fai_fetch(fai, "chr2:20,000-30,000", &seq_len);
+    char *seq = fai_fetch(fai, args.query_string, &seq_len);
     if(seq_len < 0) {
-	printf("Failed to fetch sequence in %s\n", "chr2:20,000-30,000");
+	printf("Failed to fetch sequence in %s\n", args.query_string);
 	exit(1);
     }
     size_t i, seq_sz = seq_len;

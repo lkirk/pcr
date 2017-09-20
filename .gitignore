@@ -1,7 +1,21 @@
+# vendor libs
+vendor/
+
+# cmake files
 CMakeCache.txt
 CMakeFiles/
 Makefile
 cmake_install.cmake
 src/config.h
+
+# emacs files
+\#*#
+.#*
+
+# gtags files
+GPATH
+GRTAGS
+GTAGS
+
+# output binary
 pcr
-vendor/

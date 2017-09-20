@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.1.0)
 
 project(pcr C)
 set(PCR_VERSION "0.1.0")
+set(PCR_BUG_ADDRESS "github.com/lloydkirk/pcr/issues")
+set(PCR_DOC_STRING "An insilico pcr implementation")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
 
 include(ExternalProject)
 
@@ -14,6 +17,7 @@ ExternalProject_Add(zlib
   PREFIX ${CMAKE_BINARY_DIR}/vendor/zlib
   GIT_REPOSITORY "https://github.com/madler/zlib.git"
   GIT_TAG "v1.2.11"
+  UPDATE_COMMAND ""
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND ${ZLIB_DIR}/src/zlib/configure --prefix=${ZLIB_DIR} --static
   INSTALL_DIR ${ZLIB_DIR}

@@ -6,6 +6,6 @@ addons:
   apt:
     packages:
       - cmake
-      - libc6-dev
+      - libc6
 
 install: ./scripts/travis/build

@@ -1,1 +1,3 @@
 #cmakedefine PCR_VERSION "@PCR_VERSION@"
+#cmakedefine PCR_BUG_ADDRESS "@PCR_BUG_ADDRESS@"
+#cmakedefine PCR_DOC_STRING "@PCR_DOC_STRING@"

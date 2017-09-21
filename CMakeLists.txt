@@ -5,6 +5,7 @@ set(PCR_VERSION "0.1.0")
 set(PCR_BUG_ADDRESS "github.com/lloydkirk/pcr/issues")
 set(PCR_DOC_STRING "An insilico pcr implementation")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
+# enable_testing()
 
 include(ExternalProject)
 
@@ -34,6 +35,17 @@ ExternalProject_Add(htslib
   INSTALL_COMMAND make install prefix=${HTSLIB_DIR}
   )
 
+# set(GSL_DIR ${CMAKE_BINARY_DIR}/vendor/gsl)
+# ExternalProject_Add(gsl
+#   PREFIX ${GSL_DIR}
+#   GIT_REPOSITORY "https://github.com/ampl/gsl"
+#   GIT_TAG "v2.3.0"
+#   BUILD_IN_SOURCE 1
+#   CONFIGURE_COMMAND ${GSL_DIR}/src/gsl/configure --prefix=${GSL_DIR}
+#   BUILD_COMMAND make
+#   INSTALL_COMMAND make install
+#   )
+
 include_directories(${ZLIB_DIR}/include)
 set(zlib_static ${ZLIB_DIR}/lib/libz.a)
 
@@ -44,10 +56,13 @@ include_directories(${HTSLIB_DIR}/include)
 set(htslib_static ${HTSLIB_DIR}/lib/libhts.a)
 
 file(GLOB SOURCES "src/*.c")
+add_library(pcrlib ${SOURCES})
 
 add_executable(pcr src/main.c)
 
 add_dependencies(htslib zlib)
 add_dependencies(pcr htslib)
+add_dependencies(pcr pcrlib)
+# add_dependencies(main-test pcr)
 
-target_link_libraries(pcr pthread ${htslib_static} ${zlib_static})
+target_link_libraries(pcr pcrlib pthread ${htslib_static} ${zlib_static})# ${gsl_static})

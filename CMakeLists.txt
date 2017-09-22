@@ -61,8 +61,11 @@ add_library(pcrlib ${SOURCES})
 add_executable(pcr src/main.c)
 
 add_dependencies(htslib zlib)
-add_dependencies(pcr htslib)
+add_dependencies(pcrlib htslib)
 add_dependencies(pcr pcrlib)
 # add_dependencies(main-test pcr)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
 target_link_libraries(pcr pcrlib pthread ${htslib_static} ${zlib_static})# ${gsl_static})

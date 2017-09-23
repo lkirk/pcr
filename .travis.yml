@@ -8,4 +8,4 @@ addons:
       - cmake
       - libc6
 
-build: ./scripts/travis/build
+script: ./scripts/travis/build

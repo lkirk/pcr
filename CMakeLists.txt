@@ -5,7 +5,6 @@ set(PCR_VERSION "0.1.0")
 set(PCR_BUG_ADDRESS "github.com/lloydkirk/pcr/issues")
 set(PCR_DOC_STRING "An insilico pcr implementation")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
-# enable_testing()
 
 include(ExternalProject)
 
@@ -46,6 +45,8 @@ ExternalProject_Add(htslib
 #   INSTALL_COMMAND make install
 #   )
 
+set(TARGET_GROUP test)
+
 include_directories(${ZLIB_DIR}/include)
 set(zlib_static ${ZLIB_DIR}/lib/libz.a)
 
@@ -58,7 +59,6 @@ set(htslib_static ${HTSLIB_DIR}/lib/libhts.a)
 file(GLOB SOURCES "src/*.c")
 add_library(pcrlib ${SOURCES})
 
-add_executable(pcr src/main.c)
 
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -66,7 +66,19 @@ find_package(Threads REQUIRED)
 
 add_dependencies(htslib zlib)
 add_dependencies(pcrlib htslib)
-add_dependencies(pcr pcrlib)
-# add_dependencies(main-test pcr)
 
-target_link_libraries(pcr pcrlib ${htslib_static} ${zlib_static} pthread)# ${gsl_static})
+if(TARGET_GROUP STREQUAL production)
+
+  add_executable(pcr src/main.c)
+  add_dependencies(pcr pcrlib)
+  target_link_libraries(pcr pcrlib ${htslib_static} ${zlib_static} pthread)# ${gsl_static})
+elseif(TARGET_GROUP STREQUAL test)
+  set(UNITY_DIR ${CMAKE_BINARY_DIR}/vendor/unity)
+  include_directories(${UNITY_DIR}/src)
+  add_library(unitylib ${UNITY_DIR}/src/unity.c)
+
+  add_executable(test-main ${CMAKE_BINARY_DIR}/src/test/test-main.c)
+  target_link_libraries(test-main pcrlib unitylib ${htslib_static} ${zlib_static} pthread)
+else()
+  message(FATAL_ERROR "Given TARGET_GROUP unknown")
+endif()

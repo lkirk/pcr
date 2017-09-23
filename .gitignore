@@ -1,5 +1,6 @@
 # vendor libs
-vendor/
+vendor/htslib
+vendor/zlib
 
 # cmake files
 CMakeCache.txt

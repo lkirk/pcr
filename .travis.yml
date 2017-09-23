@@ -9,3 +9,4 @@ addons:
       - libc6
 
 script: ./scripts/travis/build
+script: ./test-main

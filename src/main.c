@@ -29,7 +29,6 @@ static error_t
 parse_args(int key, char *arg, struct argp_state *state)
 {
     struct cli_arguments *args = state->input;
-    char unknown_pos_arg_msg[80];
 
     switch(key)
     {
@@ -46,8 +45,7 @@ parse_args(int key, char *arg, struct argp_state *state)
 	args->query_string = arg;
 	break;
     case ARGP_KEY_ARG:
-	sprintf(unknown_pos_arg_msg, "invalid option -- '%s'", arg);
-	argp_error(state, unknown_pos_arg_msg);
+	argp_error(state, "invalid option -- '%s'", arg);
 	break;
     default:
 	return ARGP_ERR_UNKNOWN;

@@ -8,5 +8,13 @@ addons:
       - cmake
       - libc6
 
-script: ./scripts/travis/build
-script: ./test-main
+jobs:
+  include:
+    - stage: build
+      script: ./scripts/travis/build
+    - stage: test
+      script: ./test-main
+
+stages:
+  - build
+  - test

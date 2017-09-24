@@ -87,6 +87,7 @@ file_readable(char *fname)
 /*     return query_string; */
 /* } */
 
+#ifndef TESTING
 int
 main(int argc, char **argv)
 {
@@ -186,3 +187,4 @@ main(int argc, char **argv)
     fai_destroy(fai);
     exit(0);
 }
+#endif

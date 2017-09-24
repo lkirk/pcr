@@ -1,2 +1,2 @@
 #!/bin/bash
-rm -rf vendor/{zlib,htslib} CMakeFiles/ CMakeCache.txt cmake_install.cmake Makefile src/config.h pcr libunitylib.a libpcrlib.a pcr test-main
+rm -rf vendor/{zlib,htslib,googletest} CMakeFiles/ CMakeCache.txt cmake_install.cmake Makefile src/config.h pcr libunitylib.a libpcrlib.a pcr test-main CTestTestfile.cmake

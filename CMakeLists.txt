@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.1.0)
 
-project(pcr C)
+project(pcr)
 set(PCR_VERSION "0.1.0")
 set(PCR_BUG_ADDRESS "github.com/lloydkirk/pcr/issues")
 set(PCR_DOC_STRING "An insilico pcr implementation")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
 
+enable_testing()
 include(ExternalProject)
 
 configure_file(
@@ -59,26 +60,32 @@ set(htslib_static ${HTSLIB_DIR}/lib/libhts.a)
 file(GLOB SOURCES "src/*.c")
 add_library(pcrlib ${SOURCES})
 
-
-
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 add_dependencies(htslib zlib)
 add_dependencies(pcrlib htslib)
 
-if(TARGET_GROUP STREQUAL production)
-
-  add_executable(pcr src/main.c)
-  add_dependencies(pcr pcrlib)
-  target_link_libraries(pcr pcrlib ${htslib_static} ${zlib_static} pthread)# ${gsl_static})
-elseif(TARGET_GROUP STREQUAL test)
-  set(UNITY_DIR ${CMAKE_BINARY_DIR}/vendor/unity)
-  include_directories(${UNITY_DIR}/src)
-  add_library(unitylib ${UNITY_DIR}/src/unity.c)
-
-  add_executable(test-main ${CMAKE_BINARY_DIR}/src/test/test-main.c)
-  target_link_libraries(test-main pcrlib unitylib ${htslib_static} ${zlib_static} pthread)
-else()
-  message(FATAL_ERROR "Given TARGET_GROUP unknown")
+configure_file(cmake/google_test.cmake googletest-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+  RESULT_VARIABLE result
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+if(result)
+  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
 endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+  RESULT_VARIABLE result
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+if(result)
+  message(FATAL_ERROR "Build step for googletest failed: ${result}")
+endif()
+
+# Add googletest directly to our build. This defines
+# the gtest and gtest_main targets.
+add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
+  ${CMAKE_BINARY_DIR}/googletest-build)
+
+add_subdirectory(src/test)
+add_executable(pcr src/main.c)
+add_dependencies(pcr pcrlib)
+target_link_libraries(pcr pcrlib ${htslib_static} ${zlib_static} pthread)# ${gsl_static})

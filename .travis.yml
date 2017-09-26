@@ -8,4 +8,4 @@ addons:
       - cmake
       - libc6
 
-script: ./scripts/travis/build && make test
+script: ./scripts/bootstrap && ctest -V

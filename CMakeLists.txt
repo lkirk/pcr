@@ -57,8 +57,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 include_directories(${HTSLIB_DIR}/include)
 set(htslib_static ${HTSLIB_DIR}/lib/libhts.a)
 
-file(GLOB SOURCES "src/*.c")
-add_library(pcrlib ${SOURCES})
+add_library(pcrlib "src/match.c")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)

@@ -7,5 +7,6 @@ addons:
     packages:
       - cmake
       - libc6
+      - valgrind
 
-script: ./bootstrap && ctest -V
+script: ./bootstrap && ctest -V -D ExperimentalMemCheck

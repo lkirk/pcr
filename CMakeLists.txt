@@ -8,10 +8,14 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
 
 enable_testing()
 include(ExternalProject)
+include(CTest)
 
 configure_file(
   "${CMAKE_BINARY_DIR}/src/config.h.in" "${CMAKE_BINARY_DIR}/src/config.h"
   )
+
+find_program(MEMORYCHECK_COMMAND valgrind)
+set(MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full")
 
 set(ZLIB_DIR ${CMAKE_BINARY_DIR}/vendor/zlib)
 ExternalProject_Add(zlib

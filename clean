@@ -5,6 +5,7 @@ rm -f CMakeCache.txt
 rm -f src/config.h
 rm -f pcr
 rm -f libunitylib.a libpcrlib.a
+rm -rf googletest-*
 find -type d -path '*CMakeFiles*' -print0 | xargs -0 rm -rf
 find -type d -path '*Testing*' -print0 | xargs -0 rm -rf
 find -name '*.cmake' -and -not -name 'google_test.cmake' -print0 | xargs -0 rm -f

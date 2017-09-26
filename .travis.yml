@@ -8,4 +8,4 @@ addons:
       - cmake
       - libc6
 
-script: ./scripts/bootstrap && ctest -V
+script: ./bootstrap && ctest -V

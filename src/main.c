@@ -139,10 +139,8 @@ main(int argc, char **argv)
     /* 	    exit(1); */
     /* 	} */
     /* } */
-    printf("%s\n", seq);
 
     char *to_match = "TGGGCT";
-
     char *__chrom = "chr2";
     int __start = 19990 - 1;
     int __stop = 20040;
@@ -176,12 +174,6 @@ main(int argc, char **argv)
 	}
     }
 
-    printf("%d\n", faidx_nseq(fai));
-    printf("%s\n", faidx_iseq(fai, 44));
-    printf("%d\n", faidx_seq_len(fai, faidx_iseq(fai, 44)));
-    printf("%s\n", match_n_chars("TGGGCT", 4, seq, 20));
-    /* if(faidx_fetch_seq(fai, "TGGGCT")) */
-    /* 	puts("yes, faidx has seq"); */
     free(seq);
     fai_destroy(fai);
     exit(0);

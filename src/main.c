@@ -95,6 +95,7 @@ main(int argc, char **argv)
     args.verbose = 0;
     args.output = "-";
     args.query_string = "";
+    args.reference = "";
 
     argp_parse(&argp, argc, argv, 0, 0, &args);
 
@@ -109,6 +110,18 @@ main(int argc, char **argv)
 	       args.verbose ? "yes" : "no");
     }
 
+    if(strlen(args.reference) == 0)
+    {
+	 puts("No reference specified");
+	 exit(1);
+    }
+
+    if(strlen(args.query_string) == 0)
+    {
+	 puts("No query string specified");
+	 exit(1);
+    }
+
     if(!file_readable(args.reference))
     {
 	printf("Reference is not readable: %s\n", args.reference);
@@ -118,13 +131,14 @@ main(int argc, char **argv)
     faidx_t *fai = fai_load(args.reference);
     if(!fai)
     {
-	printf("Could not load fai index of %s\n", args.reference);
+	printf("Could not load reference %s\n", args.reference);
 	exit(1);
     }
 
     int seq_len;
     char *seq = fai_fetch(fai, args.query_string, &seq_len);
-    if(seq_len < 0) {
+    if(seq_len < 0)
+    {
 	printf("Failed to fetch sequence in %s\n", args.query_string);
 	exit(1);
     }
@@ -166,10 +180,11 @@ main(int argc, char **argv)
 		printf("%s\n", seq);
 	    }
 
-	    /* if((m = match_n_chars)) */
-	    /* 	printf("%s", m); */
+
+	    /* if(match_char_ratio(to_match, seq, strlen(to_match), 2)) */
+	    /* 	puts(seq); */
 	} else {
-	    puts("no sequence found");
+	    puts("No sequence found");
 	    exit(1);
 	}
     }

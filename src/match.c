@@ -27,16 +27,16 @@ char
     return NULL;
 }
 
-/* static bool */
-/* match_char_ratio(char *substr, char *str, int str_len, int mm_ratio) */
-/* { */
-/*     int score = 0, i; */
-/*     for (i=0; i<str_len; ++i) */
-/* 	{ */
-/* 	    if (substr[i] == str[i]) */
-/* 		score += 1; */
-/* 	    else */
-/* 		score -= 2; */
-/* 	} */
-/*     return score >= 0; */
-/* } */
+bool
+match_char_ratio(char *substr, char *str, int substr_len, int mm_ratio)
+{
+    int score = 0, i;
+    for (i=0; i<substr_len; ++i)
+    {
+	if (substr[i] == str[i])
+	    score += 1;
+	else
+	    score -= mm_ratio;
+    }
+    return true ? score >= 0 : false;
+}

@@ -9,4 +9,4 @@ addons:
       - libc6
       - valgrind
 
-script: ./bootstrap && ctest -V -D ExperimentalMemCheck
+script: ./bootstrap && ./test

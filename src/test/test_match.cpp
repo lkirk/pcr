@@ -7,17 +7,17 @@ extern "C" {
 #include "../match.h"
 }
 
-// class FaidxTestFixture: public testing::Test
-// {
-// protected:
-//     faidx_t *fai;
-//     void SetUp(){
-// 	fai = fai_load("/home/lkirk/references/hg38.fa");
-//     }
-//     void TearDown(){
-// 	fai_destroy(fai);
-//     }
-// };
+class FaidxTestFixture: public testing::Test
+{
+protected:
+    faidx_t *fai;
+    void SetUp(){
+	fai = fai_load("../../test_data/test.fa");
+    }
+    void TearDown(){
+	fai_destroy(fai);
+    }
+};
 
 TEST(match_n_chars, match)
 {
@@ -37,10 +37,10 @@ TEST(match_char_ratio, no_match)
     EXPECT_FALSE(match_char_ratio((uint8_t*)"TAGCCG", chars_to_match, 6, 2));
 }
 
-// TEST_F(FaidxTestFixture, match_fasta_fetch)
-// {
-//     int seq_length = 0;
-//     char *seq = faidx_fetch_seq(fai, "chr2", 19991, 20040, &seq_length);
-//     EXPECT_TRUE(match_char_ratio((char*)"CAGTAACTTGGGGCTCCCAC", seq, 20, 2));
-//     free(seq);
-// }
+TEST_F(FaidxTestFixture, match_fasta_fetch)
+{
+    int seq_length = 0;
+    uint8_t *seq = (uint8_t*)faidx_fetch_seq(fai, "chr2", 0, 50, &seq_length);
+    EXPECT_TRUE(match_char_ratio((uint8_t*)"gtccaaatatgtctggtgaa", seq, 20, 2));
+    free(seq);
+}

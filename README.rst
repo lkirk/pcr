@@ -1,7 +1,11 @@
 To bootstrap (clone dependencies, build binary)
 ::
-   ./scripts/bootstrap
+   ./bootstrap
 
 To clean the repo (remove vendor packages, etc)
 ::
-   ./scripts/clean
+   ./clean
+
+To run tests (valgrind must be installed)
+::
+   ./test

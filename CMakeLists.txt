@@ -4,7 +4,7 @@ project(pcr)
 set(PCR_VERSION "0.1.0")
 set(PCR_BUG_ADDRESS "github.com/lloydkirk/pcr/issues")
 set(PCR_DOC_STRING "An insilico pcr implementation")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wpedantic -Wextra")
 
 enable_testing()
 include(ExternalProject)

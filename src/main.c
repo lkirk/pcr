@@ -110,10 +110,17 @@ main(int argc, char **argv)
 	       args.verbose ? "yes" : "no");
     }
 
+    // TODO: make this work
+    /* if(argc == 1) */
+    /* { */
+    /* 	argp_state_help(&argp, stdout, 0); */
+    /* 	exit(1); */
+    /* } */
+
     if(strlen(args.reference) == 0)
     {
-	 puts("No reference specified");
-	 exit(1);
+	puts("No reference specified");
+	exit(1);
     }
 
     if(strlen(args.query_string) == 0)
